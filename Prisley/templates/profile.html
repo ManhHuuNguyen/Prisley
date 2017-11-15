@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../static/images/other/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../static/stylesheets/home.css">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/dd.css"/>
+    <title>Prisley</title>
+</head>
+<body>
+    <div id="header">
+        <img id="logo" src="../static/images/other/logo2.png">
+        <input id="find_player" type="text" placeholder="Search for Player">
+        <div id="user_info" onclick="redirect('/{{ username }}')">
+            <img id="user-avatar" src="../static/images/avatars/{{ user_avatar }}">
+            <span style="margin-top: 7px; color: white; font-weight: bold; vertical-align: middle">{{ username }}</span>
+        </div>
+        <button id="message_icon">Messages</button>
+        <button id="notification_icon">Notifications</button>
+    </div>
+
+
+    <div id="friendlist">
+        <ul>
+            <div class="top-of-friendlist">
+                <select class="selectFriendList">
+                    {% for team in user_teams %}
+                        <option data-image="/static/images/team_logos/{{ team.team_logo }}" value="{{ team.team_id }}">
+                            {{ team.team_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <li>
+                <img class="friend-avatar" src="/static/images/avatars/stephen_colbert.jpg">
+                <span class="friend-name">Michael Jordan</span>
+                <img class="friend-online-ic" src="/static/images/icons/green-icon.png">
+            </li>
+            <li>
+                <img class="friend-avatar" src="/static/images/avatars/jon_oliver.jpg">
+                <span class="friend-name">Marco Reus</span>
+                <img class="friend-online-ic" src="/static/images/icons/green-icon.png">
+            </li>
+        </ul>
+    </div>
+
+    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
+    <script src="../static/javascript/jquery.dd.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../static/javascript/home.js"></script>
+    <script language="javascript">
+        $(document).ready(function (e) {
+            try {
+                $("body select").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -42,6 +42,16 @@ def sign_up():
     return render_template("signup.html")
 
 
+@app.route("/<username>", methods = ["GET", "POST"])
+def profile(username):
+    if request.method == "GET":
+        return render_template("profile.html", user_id = session["user_id"],
+                                               username = session["username"],
+                                               user_avatar = session["user_avatar"],
+                                               user_teams = session["user_teams"]
+                               )
+
+
 @app.route("/home/<int:field_id>", methods = ["GET", "POST"])
 def home(field_id):
     if request.method == "GET":
@@ -105,7 +115,8 @@ def home(field_id):
                 return dumps({"isSuccess": False})
 
         elif request.form["actionType"] == "changeSelect":
-            teams = list(helper.query("SELECT * FROM request_to_join WHERE(team_id = {0});".format(request.form["team_id"]), cursor))
+            teams = list(helper.query("SELECT * FROM request_to_join WHERE(team_id = {0} AND match_id={1});".format(request.form["team_id"], request.form["match_id"]), cursor))
+            print(True if len(teams) > 0 else False)
             return dumps({"is_joined": True if len(teams) > 0 else False})
     return "Hello world"
 

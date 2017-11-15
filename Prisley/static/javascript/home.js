@@ -195,8 +195,6 @@ function join_unjoin(thisJoinButton){
     var select = thisJoinButton.parentNode.getElementsByTagName("select")[0];
     var team_id = select.options[select.selectedIndex].value;
     if (thisJoinButton.className == 'joinButton join'){
-        thisJoinButton.className = "joinButton unjoin";
-        requestNum.innerHTML = parseInt(requestNum.innerHTML) - 1;
         $.ajax({
             type: "POST",
             url: "/home/" + field_id,
@@ -238,10 +236,9 @@ function selectTeam(itself, match_id){
     $.ajax({
         type: "POST",
         url: "/home/" + field_id,
-        data:{"team_id": team_id, "actionType": "changeSelect"},
+        data:{"team_id": team_id, "match_id": match_id, "actionType": "changeSelect"},
         dataType: "json",
         success: function (returnData) {
-            console.log(itself.getAttribute("data-match-id"));
             if (returnData["is_joined"]){
                 $("[data-match-id={0}]".format(match_id))[0].className = "joinButton join";
             }
@@ -250,4 +247,47 @@ function selectTeam(itself, match_id){
             }
         }
     });
+}
+
+function redirect(url) {
+	window.location = url;
+}
+
+function createMatch(field_name) {
+    var popUpWindow = document.getElementById("popUpWindow");
+    var teams = document.getElementsByClassName('top-of-friendlist')[0].getElementsByTagName("option");
+    var options = "";
+    for (var i=0; i<teams.length; i++){
+        var option = "<option data-image='{0}' value='{1}'>{2}</option>".format(teams[i].getAttribute("data-image"), teams[i].getAttribute("value"), teams[i].innerHTML);
+        options += option;
+    }
+    var select = "<select id='create_match_team_select' tabindex='-1'>{0}</select>".format(options);
+    popUpWindow.innerHTML = ("<button style='float: right; font-weight: bold; outline: 0; border: none; background-color: whitesmoke;' onclick='popUpDissapear();'>&times;</button><span style='font-weight: bold; font-size: 20px;'><center>{0}</center></span><hr>{1}<br>" +
+        "Start: <input type='text' id='startDatePick' class='datepicker'> End: <input type='text' id='endDatePick' class='datepicker    '>"+
+        "<textarea style='width: 100%; height: 100px; margin-top: 10px;' placeholder='Comment (in 100 characters or less)'>" +
+        "</textarea><button style='float: right; font-weight: bold; font-size: 14px; background-color: limegreen; color: white;'>POST</button>").
+        format(field_name, select);
+    var startDatePick = new Pikaday({ field: document.getElementById('startDatePick'),
+                               onSelect: function(date) {
+                                   document.getElementById("startDatePick").value = date.getDate() + "/"+
+                                                                                    date.getMonth() + "/"+
+                                                                                    date.getFullYear() + " " +
+                                                                                    date.getHours() + ":"+
+                                                                                    date.getMinutes();
+                               }});
+    var endDatePick = new Pikaday({ field: document.getElementById('endDatePick'),
+                               onSelect: function(date) {
+                                   document.getElementById("endDatePick").value = date.getDate() + "/"+
+                                                                                  date.getMonth() + "/"+
+                                                                                  date.getFullYear() + " " +
+                                                                                  date.getHours() + ":"+
+                                                                                  date.getMinutes();
+                               }});
+    $("body select").msDropDown();
+    popUpWindow.style.display = "block";
+
+}
+
+function popUpDissapear() {
+    document.getElementById("popUpWindow").style.display="none";
 }
