@@ -9,11 +9,11 @@
 .borderRadiusBtm ul li:first-child{-moz-border-radius:5px 5px 0 0; border-radius:5px 5px 0 0 ;border-bottom:1 solid #c3c3c3; }
 
 .ddcommon .disabled img, .ddcommon .disabled span, .ddcommon.disabledAll{
-opacity: .5; /* standard: ff gt 1.5, opera, safari */
+opacity: .5; /* standard: ff gt 3.5, opera, safari */
 -ms-filter:"alpha(opacity=50)"; /* ie 8 */
 filter:alpha(opacity=50); /* ie lt 7 */
--khtml-opacity:.5; /* safari 1.x */
--moz-opacity:.5; /* ff lt 1.5, netscape */
+-khtml-opacity:.5; /* safari 3.x */
+-moz-opacity:.5; /* ff lt 3.5, netscape */
 color:#999999;
 }
 .ddcommon .clear{clear:both}

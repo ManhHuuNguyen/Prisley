@@ -32,7 +32,7 @@
                 <div style="padding: 15px 15px 15px 15px">
                     <button id="forward-button" onmouseover="forwardPic()"></button>
                     <butdton id="backward-button" onmouseover="backwardPic()"></butdton>
-                    <img id="field-image" src="/static/images/stadiums/2/1.jpg">
+                    <img id="field-image" src="/static/images/stadiums/4/1.jpg">
                 </div>
             </div>
             <div style="padding-bottom: 10px;">
@@ -42,7 +42,7 @@
                 {% else %}
                     <button id="pin" onclick="pin_unpin()" class="pin"></button>
                 {% endif %}
-                <button id="create_match" onclick="createMatch('{{ field.field_name }}')">CREATE MATCH</button>
+                <button id="create_match" onclick="openPopUp('{{ field.field_name }}')">CREATE MATCH</button>
             </div>
             <ul id="appointment-content" data-field-id="{{ field.field_id }}">
                 {% for match_up in match_up_list %}
@@ -55,8 +55,10 @@
                                 <span class="username highlight">{{ match_up.username }}</span>
                                 <span style="color: darkslategray; margin-left: 5px; margin-right: 5px">&bull;</span>
                                 <span class="team highlight">@{{ match_up.team }}</span>
+                                <br>
+                                From: <span class="time">{{ match_up.start_time }}</span>
                                 <span style="color: darkslategray; margin-left: 5px; margin-right: 5px">&bull;</span>
-                                <span class="time">{{ match_up.time }}</span>
+                                To: <span class="time">{{ match_up.end_time }}</span>
                             </div>
                             <div class="comment">
                                 {{ match_up.comment }}

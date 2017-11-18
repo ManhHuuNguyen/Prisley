@@ -218,7 +218,7 @@
         // make the `defaultDate` the initial selected value
         setDefaultDate: false,
 
-        // first day of week (0: Sunday, 1: Monday etc)
+        // first day of week (0: Sunday, 3: Monday etc)
         firstDay: 0,
 
         // the default flag for moment's strict date parsing
