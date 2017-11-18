@@ -118,10 +118,9 @@ def home(field_id):
             teams = list(helper.query("SELECT * FROM request_to_join WHERE(team_id = {0} AND match_id={1});".format(request.form["team_id"], request.form["match_id"]), cursor))
             return dumps({"is_joined": True if len(teams) > 0 else False})
         elif request.form["actionType"] == "createMatch":
-            helper.update("INSERT INTO matchups (challenger_id, field_id, team_id, start_date, end_date, start_time, end_time, comment) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7});".
+            helper.update("INSERT INTO matchups (challenger_id, field_id, team_id, start_date, end_date, start_time, end_time, comment) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', '{6}', '{7}');".
                           format(session["user_id"], field_id, request.form["team_id"], request.form["startDate"], request.form["endDate"],
-                                 request.form["StartTime"], request.form["endTime"], request.form["comment"]), cursor, db)
-            print(request.form["startDate"], request.form["startTime"], request.form["endDate"], request.form["endTime"])
+                                 request.form["startTime"], request.form["endTime"], request.form["comment"]), cursor, db)
     return "Hello world"
 
 

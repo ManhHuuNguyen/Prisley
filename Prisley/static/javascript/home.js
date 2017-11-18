@@ -168,7 +168,7 @@ function pin_unpin(){
         $.ajax({
             type: "POST",
             url: "/home/" + field_id,
-            data: {actionType: "pin", "action": "-"},
+            data: {"actionType": "pin", "action": "-"},
             success: function () {
                 window.alert("You won't be bothered by this field anymore.");
             }
@@ -179,7 +179,7 @@ function pin_unpin(){
         $.ajax({
             type: "POST",
             url: "/home/" + field_id,
-            data: {actionType: "pin", "action": "+"},
+            data: {"actionType": "pin", "action": "+"},
             success: function () {
                 window.alert("You will be notified whenever there is a new matchup.");
             }
@@ -301,13 +301,23 @@ function createMatch() {
     $.ajax({
         type: "POST",
         url: "/home/" + field_id,
-        data: {"data": 0}
+        data: {
+            "actionType": "createMatch",
+            "team_id": team_id, "comment": comment,
+            "startDate": formatDate(startDateTime[0]),
+            "startTime": formatTime(startDateTime[1]),
+            "endDate": formatDate(endDateTime[0]),
+            "endTime": formatTime(endDateTime[1])
+        },
+        success: function () {
+            popUpDissapear();
+        }
     });
 }
 
 function formatDate(date) {
     a = date.split("/");
-    return a[1] + ":" + a[0] + ":" + a[2];
+    return a[2] + "-" + a[1] + "-" + a[0];
 }
 
 function formatTime(time) {
