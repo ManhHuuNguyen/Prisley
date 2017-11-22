@@ -5,12 +5,13 @@ import helper
 import os
 import random
 
+
 app = Flask(__name__)
 app.secret_key = "qwre953heqirhv3,;qgbh4549s/;,"
-db = pymysql.connect(host="localhost",
+db = pymysql.connect(host="35.193.15.89",
                      user="root",
                      password="root",
-                     db="soccerSite",
+                     db="soccerdb",
                      cursorclass=pymysql.cursors.DictCursor)
 
 cursor = db.cursor()
@@ -109,6 +110,9 @@ def home(field_id):
             if match_up["team_id"] != int(request.form["team_id"]):
                 if request.form["action"] == "+":
                     helper.update(" INSERT INTO request_to_join (team_id, match_id) VALUES ({0}, {1});".format(request.form["team_id"], request.form["match_id"]), cursor, db)
+                    team_name = list(helper.query("SELECT * FROM teams WHERE (team_id={0})".format(request.form["team_id"]), cursor))[0]["team_name"]
+                    content = "Team {0} requests to join your ".format(team_name)
+                    helper.update("INSERT INTO notifications (user_id, content) VALUES ({0}, {1})".format(session["user_id"], content), cursor, db)
                 else:
                     helper.update("DELETE FROM request_to_join WHERE(team_id={0} AND match_id={1});".format(request.form["team_id"], request.form["match_id"]), cursor, db)
                 return dumps({"isSuccess": True})
@@ -137,6 +141,11 @@ def return_teams():
     if request.method == "POST":
         return dumps(session["user_teams"])
 
+
+@app.route("/return_notifications", methods=["POST"])
+def return_notifications():
+    if request.method == "POST":
+        return
 
 # where field owners can set their price range, update their description etc
 @app.route("/fieldowners")
