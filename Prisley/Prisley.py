@@ -57,7 +57,7 @@ def profile(username):
 def home(field_id):
     if request.method == "GET":
         if "user_id" in session:
-            user = list(helper.query("SELECT * FROM users WHERE (user_id = {0})".format(session["user_id"]), cursor))[0]
+            user = list(helper.query("SELECT * FROM users WHERE (user_id = {0});".format(session["user_id"]), cursor))[0]
             session["user_avatar"] = user["avatar"]
             session["username"] = user["username"]
             user_team_ids = list(helper.query("SELECT * FROM user_team_rela WHERE(user_id = {0});".format(session["user_id"]), cursor))
@@ -68,7 +68,9 @@ def home(field_id):
                                       "team_logo": user_team["team_logo"]} for user_team in user_teams]
             field = list(helper.query("SELECT * FROM fields WHERE (field_id={0});".format(field_id), cursor))[0]
             is_pinned = list(helper.query("SELECT * FROM pin_unpin WHERE (user_id={0} AND field_id={1});".format(session["user_id"], field_id), cursor))
-            match_ups = list(helper.query("SELECT * FROM matchups WHERE (field_id = {0});".format(field_id), cursor))
+            notifications = list(helper.query("SELECT * FROM notifications WHERE (user_id = {0}) ORDER BY updated_time DESC LIMIT 10;".format(session["user_id"]), cursor))
+            unseen_notification = [noti for noti in notifications if noti["seen"] == "F"]
+            match_ups = list(helper.query("SELECT * FROM matchups WHERE (field_id = {0}) ORDER BY updated_time DESC;".format(field_id), cursor))
             match_up_list = []
             field_images = os.listdir(os.path.join(ROOT_DIR, "static/images/stadiums", str(field_id)))
             for match_up in match_ups:
@@ -88,6 +90,7 @@ def home(field_id):
             return render_template("home.html", user_id = session["user_id"],
                                                 user_avatar = session["user_avatar"],
                                                 username = session["username"],
+                                                unseen_noti_num = len(unseen_notification),
                                                 user_teams = session["user_teams"],
                                                 match_up_list = match_up_list,
                                                 field={"field_id" : field_id,
@@ -110,9 +113,10 @@ def home(field_id):
             if match_up["team_id"] != int(request.form["team_id"]):
                 if request.form["action"] == "+":
                     helper.update(" INSERT INTO request_to_join (team_id, match_id) VALUES ({0}, {1});".format(request.form["team_id"], request.form["match_id"]), cursor, db)
-                    team_name = list(helper.query("SELECT * FROM teams WHERE (team_id={0})".format(request.form["team_id"]), cursor))[0]["team_name"]
-                    content = "Team {0} requests to join your ".format(team_name)
-                    helper.update("INSERT INTO notifications (user_id, content) VALUES ({0}, {1})".format(session["user_id"], content), cursor, db)
+                    team_name = list(helper.query("SELECT * FROM teams WHERE (team_id={0});".format(request.form["team_id"]), cursor))[0]["team_name"]
+                    field_name = list(helper.query("SELECT * FROM fields WHERE (field_id={0});".format(match_up["field_id"]), cursor))[0]["field_name"]
+                    content = "Team {0} requests to join your game at {1} from {2} {3} to {4} {5}".format(team_name, field_name, str(match_up["start_time"]), str(match_up["start_date"]), str(match_up["end_time"]), str(match_up["end_date"]))
+                    helper.update("INSERT INTO notifications (user_id, content, seen) VALUES ({0}, '{1}', 'F');".format(session["user_id"], content), cursor, db)
                 else:
                     helper.update("DELETE FROM request_to_join WHERE(team_id={0} AND match_id={1});".format(request.form["team_id"], request.form["match_id"]), cursor, db)
                 return dumps({"isSuccess": True})
@@ -125,6 +129,7 @@ def home(field_id):
             helper.update("INSERT INTO matchups (challenger_id, field_id, team_id, start_date, end_date, start_time, end_time, comment) VALUES ({0}, {1}, {2}, '{3}', '{4}', '{5}', '{6}', '{7}');".
                           format(session["user_id"], field_id, request.form["team_id"], request.form["startDate"], request.form["endDate"],
                                  request.form["startTime"], request.form["endTime"], request.form["comment"]), cursor, db)
+            # helper.query("SELECT users.user_id FROM users INNER JOIN ;".format(), cursor)
     return "Hello world"
 
 
