@@ -323,3 +323,27 @@ function formatDate(date) {
 function formatTime(time) {
     return time + ":00";
 }
+
+function show_notification(thisButton) {
+    $.ajax({
+        type: "POST",
+        url: "/return_notifications",
+        dataType: "json",
+        success: function (returnData) {
+            for (var i=0; i < returnData.length; i++){
+                console.log(returnData[i]["noti_content"]);
+            }
+            thisButton.getElementsByTagName("span")[0].innerHTML = "0";
+            var notiBubble = document.getElementsByClassName("speech-bubble")[0];
+            notiBubble.style.display = "block";
+        }
+    });
+}
+
+function getOffset(el) {
+    el = el.getBoundingClientRect();
+    return {
+        left: el.left + window.scrollX,
+        top: el.top + window.scrollY
+    };
+}

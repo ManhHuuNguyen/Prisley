@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="../static/stylesheets/home.css">
         <link rel="stylesheet" type="text/css" href="/static/stylesheets/dd.css"/>
         <link rel="stylesheet" type="text/css" href="/static/stylesheets/pikaday.css">
+        <link rel="stylesheet" type="text/css" href="/static/stylesheets/notification_bubble.css">
     </head>
     <body>
         <div id="header">
@@ -17,10 +18,14 @@
                 <div id="user_info" onclick="redirect('/{{ username }}')">
                     <img id="user-avatar" src="../static/images/avatars/{{ user_avatar }}">
                     <span style="color: white; font-weight: bold; vertical-align: middle">{{ username }}</span>
-{#                    <span style="color: white; font-weight: bold; vertical-align: middle">OompaloompaOompaloompaOompaloompa</span>#}
                 </div>
-                <button id="message_icon">Messages <span style="font-weight: bold">100+</span></button>
-                <button id="notification_icon">Notifications <span style="font-weight: bold">{{ unseen_noti_num }}</span></button>
+                <button id="message_icon">Messages <span style="font-weight: bolder;">100+</span></button>
+                <div style="margin-left: 5px; display: inline-block;">
+                    <button id="notification_icon" onclick="show_notification(this)">Notifications <span style="font-weight: bolder;">{{ unseen_noti_num }}</span></button>
+                    <div class="speech-bubble" style="display: none; top: 42px;">
+                        <div class="arrow bottom right"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <input type="text" placeholder="Find Soccer Field" id="search_box" class="control">

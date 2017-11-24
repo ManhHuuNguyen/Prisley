@@ -46,7 +46,7 @@ html, body{
     left: 0;
     top: 0;
     z-index: 10;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 #logo{
@@ -110,14 +110,12 @@ html, body{
 }
 
 #notification_icon{
-    display: inline-block;
     color: white;
     outline: none;
     border: none;
     background-color: darkgreen;
     font-size: 12px;
     height: 30px;
-    margin-left: 5px;
 }
 
 #notification_icon:hover{

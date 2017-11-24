@@ -1,0 +1,30 @@
+.speech-bubble {
+    background-color: #f8f8f8;
+    border: 1px solid #c8c8c8;
+    width: 110px;
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+    z-index: 20;
+}
+
+.speech-bubble .arrow {
+    border-style: solid;
+    position: absolute;
+}
+
+.bottom {
+    border-color: transparent transparent  #c8c8c8 transparent;
+    border-width: 0 15px 15px 15px;
+    top: -15px;
+}
+
+.bottom:after {
+    border-color: transparent transparent #f8f8f8 transparent;
+    border-style: solid;
+    border-width: 0 14px 14px 14px;
+    top: 1px;
+    content: "";
+    position: absolute;
+    left: -14px;    
+} 

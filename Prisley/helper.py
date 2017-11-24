@@ -16,3 +16,8 @@ def format_date(date):
 def format_time(time):
     a = str(time).split(":")
     return a[0] + ":" + a[1]
+
+def filter_sql(data_string):
+    return data_string.replace("'", "\\'")
+
+
