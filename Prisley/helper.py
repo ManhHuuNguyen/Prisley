@@ -3,9 +3,20 @@ def update(sql_statement, cursor, db):
     db.commit()
 
 
-def query(sql_statement, cursor):
-    cursor.execute(sql_statement)
-    return cursor
+def query_all(sql_statement, cursor):
+    num_row = cursor.execute(sql_statement)
+    if num_row > 0:
+        return list(cursor)
+    else:
+        return list()
+
+
+def query_one(sql_statement, cursor):
+    num_row = cursor.execute(sql_statement)
+    if num_row > 0:
+        return list(cursor)[0]
+    else:
+        return list()
 
 
 def format_date(date):

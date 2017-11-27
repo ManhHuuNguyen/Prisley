@@ -2,13 +2,16 @@ var map, infoWindow, initialPos;
 var field_markers = [];
 var position_markers=[];
 var teams = [];
+var ONE_DAY = 1000 * 60 * 60 * 24;
+var ONE_HOUR = 1000 * 60 * 60;
+var ONE_MINUTE = 1000 * 60;
 
 String.prototype.format = function() {
-  str = this;
-  for (k in arguments) {
-    str = str.replace("{" + k + "}", arguments[k])
-  }
-  return str;
+    str = this;
+    for (k in arguments) {
+        str = str.replace("{" + k + "}", arguments[k]);
+    }
+    return str;
 };
 
 function initMap(){
@@ -261,10 +264,9 @@ function openPopUp(field_name) {
         options += option;
     }
     var select = "<select id='create_match_team_select' tabindex='-1'>{0}</select>".format(options);
-    popUpWindow.innerHTML = ("<button style='float: right; font-weight: bold; outline: 0; border: none; background-color: whitesmoke;' onclick='popUpDissapear();'>&times;</button><span style='font-weight: bold; font-size: 20px;'><center>{0}</center></span><hr>{1}<br>" +
+    popUpWindow.innerHTML = ("<button class='closeWindowBttn' onclick='popUpDissapear();'>&times;</button><span style='font-weight: bold; font-size: 20px;'><center>{0}</center></span><hr>{1}<br>" +
         "Start: <input type='text' id='startDatePick' class='datepicker'> End: <input type='text' id='endDatePick' class='datepicker'>"+
-        "<textarea style='width: 100%; height: 100px; margin-top: 10px;' placeholder='Comment (in 100 characters or less)'>" +
-        "</textarea><button style='float: right; font-weight: bold; font-size: 14px; background-color: limegreen; color: white;' onclick='createMatch()'>POST</button>").
+        "<textarea id='commentArea' placeholder='Comment (in 100 characters or less)'></textarea><button id='popUpCreateMatchBttn' onclick='createMatch()'>POST</button>").
         format(field_name, select);
     var startDatePick = new Pikaday({ field: document.getElementById('startDatePick'),
                                onSelect: function(date) {
@@ -325,25 +327,60 @@ function formatTime(time) {
 }
 
 function show_notification(thisButton) {
+    var notiBubble = document.getElementsByClassName("speech-bubble")[0];
+    if (notiBubble.style.display=='none'){
+        $.ajax({
+            type: "POST",
+            url: "/return_notifications",
+            data: {
+                "actionType": "get_noti"
+            },
+            dataType: "json",
+            success: function (returnData) {
+                var lilist = "";
+                for (var i = 0; i < returnData.length; i++) {
+                    var oldDate = new Date(returnData[i]["updated_time"]["$date"]);
+                    var newDate = new Date();
+                    lilist += "<li><div class='noti-wrapper-image'><img class='noti_image' src='/static/images/{0}'></div><div class='noti-wrapper-content'>{1}<div class='timePass'>{2}</div></div></li>".
+                    format(returnData[i]["noti_image"], returnData[i]["noti_content"], timePass(newDate - oldDate));
+                }
+                thisButton.getElementsByTagName("span")[0].innerHTML = "0";
+                notiBubble.innerHTML = "<div class='arrow bottom right'></div><ul><div id='notification_header'>Notifications</div>"
+                    + lilist +
+                    "<div id='notification_footer'><img src='/static/images/icons/double_down_icon.png'></div></ul>";
+                notiBubble.style.display = "block";
+            }
+        });
+    }
+    else{
+        notiBubble.style.display='none';
+    }
+}
+
+function timePass(time) {
+    if (time > ONE_DAY){
+        return Math.round(time/ONE_DAY) + " days ago";
+    }
+    else if (time > ONE_HOUR){
+        return Math.round(time/ONE_HOUR) + " hours ago";
+    }
+    else{
+        return Math.round(time/ONE_MINUTE) + " minutes ago";
+    }
+
+}
+
+setInterval(function () {
     $.ajax({
         type: "POST",
         url: "/return_notifications",
+        data: {
+            "actionType": "get_noti_num"
+        },
         dataType: "json",
         success: function (returnData) {
-            for (var i=0; i < returnData.length; i++){
-                console.log(returnData[i]["noti_content"]);
-            }
-            thisButton.getElementsByTagName("span")[0].innerHTML = "0";
-            var notiBubble = document.getElementsByClassName("speech-bubble")[0];
-            notiBubble.style.display = "block";
+            console.log(returnData["new_noti"]);
+            document.getElementById("notification_icon").getElementsByTagName("span")[0].innerHTML = returnData["new_noti"].toString();
         }
     });
-}
-
-function getOffset(el) {
-    el = el.getBoundingClientRect();
-    return {
-        left: el.left + window.scrollX,
-        top: el.top + window.scrollY
-    };
-}
+}, 30000);

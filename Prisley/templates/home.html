@@ -22,9 +22,12 @@
                 <button id="message_icon">Messages <span style="font-weight: bolder;">100+</span></button>
                 <div style="margin-left: 5px; display: inline-block;">
                     <button id="notification_icon" onclick="show_notification(this)">Notifications <span style="font-weight: bolder;">{{ unseen_noti_num }}</span></button>
-                    <div class="speech-bubble" style="display: none; top: 42px;">
+                    <div class="speech-bubble" style="display: none; top: 45px; box-sizing: border-box; margin-left: -300px;">
                         <div class="arrow bottom right"></div>
                     </div>
+                </div>
+                <div style="margin-left: 5px; display: inline-block;">
+                    <button id="logout" onclick="redirect('/logout')">Logout</button>
                 </div>
             </div>
         </div>
